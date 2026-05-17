@@ -116,11 +116,4 @@
       };
     };
   };
-
-  systemd.tmpfiles.rules = [
-    "d /run/docker 0755 root root -"
-    "L+ /run/docker.sock - - - - /run/podman/podman.sock"
-    "L+ /run/docker/docker.sock - - - - /run/podman/podman.sock"
-    "d /opt/1panel/tmp 0755 root root -"
-  ];
 }
