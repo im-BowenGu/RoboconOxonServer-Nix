@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-SCRIPT_VERSION="1.0.0"
+SCRIPT_VERSION="1.1.0"
 REPO_URL="https://github.com/im-BowenGu/RoboconOxonServer-Nix.git"
 CONFIG_DIR="/root/.config/system-manager"
 VERSION_FILE="/opt/robocon-version"
@@ -91,7 +91,7 @@ EOF
 fi
 
 info "=== Bootstrap complete ==="
-echo "  nginx:      http://<host>/ (proxies to 1panel)"
-echo "  1panel:     https://<host>:37490"
+echo "  nginx:      http://<host>/ (proxies to 1panel backend)"
+echo "  1panel:     http://<host>:37490"
 echo "  Username:   sqlite3 /opt/1panel/db/core.db 'SELECT key,value FROM settings;'"
 echo "  Re-run:     curl -fsSL https://raw.githubusercontent.com/im-BowenGu/RoboconOxonServer-Nix/master/bootstrap.sh | sudo bash"
