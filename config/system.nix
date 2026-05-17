@@ -38,6 +38,41 @@
     wantedBy = [ "sockets.target" ];
   };
 
+  environment.etc = {
+    "containers/registries.conf".text = ''
+      unqualified-search-registries = ["docker.io"]
+
+      [[registry]]
+      location = "docker.io"
+      [[registry.mirror]]
+      location = "mirror.gcr.io"
+    '';
+    "containers/policy.json".text = ''
+      {
+        "default": [
+          {
+            "type": "insecureAcceptAnything"
+          }
+        ],
+        "transports": {
+          "docker-daemon": {
+            "": [
+              {
+                "type": "insecureAcceptAnything"
+              }
+            ]
+          }
+        }
+      }
+    '';
+    "containers/storage.conf".text = ''
+      [storage]
+      driver = "overlay"
+      [storage.options]
+      pull_options = {enable_partial_images = "false"}
+    '';
+  };
+
   systemd.tmpfiles.rules = [
     "d /run/docker 0755 root root -"
     "L+ /run/docker.sock - - - - /run/podman/podman.sock"
