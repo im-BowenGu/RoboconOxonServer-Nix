@@ -10,10 +10,6 @@
     panel-1panel
   ];
 
-  environment.etc."profile.d/system-manager.sh".text = ''
-    export PATH=/run/system-manager/sw/bin:$PATH
-  '';
-
   systemd.services.podman = {
     enable = true;
     description = "Podman API Service";
@@ -104,11 +100,24 @@
     enable = true;
     package = pkgs.nginx;
     recommendedProxySettings = true;
-    virtualHosts."_" = {
+    virtualHosts."default" = {
       serverName = "_";
       default = true;
-      root = "/var/www/html";
-      locations."/" = { index = "index.html index.htm"; };
+      listen = [
+        { addr = "0.0.0.0"; port = 80; }
+      ];
+      locations."/" = {
+        proxyPass = "https://127.0.0.1:37490";
+        proxyWebsockets = true;
+        extraConfig = ''
+          proxy_ssl_verify off;
+          proxy_ssl_session_reuse off;
+          proxy_set_header Host $host;
+          proxy_set_header X-Real-IP $remote_addr;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          proxy_set_header X-Forwarded-Proto $scheme;
+        '';
+      };
     };
   };
 }
