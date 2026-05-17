@@ -4,7 +4,8 @@
   system-manager.allowAnyDistro = true;
 
   environment.systemPackages = with pkgs; [
-    podman docker-client podman-compose nginx curl wget
+    nix
+    podman docker-client podman-compose nginx curl wget sqlite
     cni-plugins aardvark-dns slirp4netns
     git
     panel-1panel
@@ -107,11 +108,9 @@
         { addr = "0.0.0.0"; port = 80; }
       ];
       locations."/" = {
-        proxyPass = "https://127.0.0.1:37490";
+        proxyPass = "http://127.0.0.1:37490";
         proxyWebsockets = true;
         extraConfig = ''
-          proxy_ssl_verify off;
-          proxy_ssl_session_reuse off;
           proxy_set_header Host $host;
           proxy_set_header X-Real-IP $remote_addr;
           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
