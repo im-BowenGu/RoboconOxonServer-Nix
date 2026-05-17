@@ -100,6 +100,7 @@
   services.nginx = {
     enable = true;
     package = pkgs.nginx;
+    recommendedProxySettings = false;
     virtualHosts."default" = {
       serverName = "_";
       default = true;
@@ -107,7 +108,11 @@
         { addr = "0.0.0.0"; port = 80; }
       ];
       locations."/" = {
-        extraConfig = "return 302 http://$host:37490;";
+        proxyPass = "http://127.0.0.1:37490";
+        proxyWebsockets = true;
+        extraConfig = ''
+          proxy_set_header Host $host;
+        '';
       };
     };
   };
