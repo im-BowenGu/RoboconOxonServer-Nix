@@ -100,7 +100,6 @@
   services.nginx = {
     enable = true;
     package = pkgs.nginx;
-    recommendedProxySettings = false;
     virtualHosts."default" = {
       serverName = "_";
       default = true;
@@ -108,12 +107,15 @@
         { addr = "0.0.0.0"; port = 80; }
       ];
       locations."/" = {
-        proxyPass = "http://127.0.0.1:37490";
-        proxyWebsockets = true;
-        extraConfig = ''
-          proxy_set_header Host $host;
-        '';
+        extraConfig = "return 302 http://$host:37490;";
       };
     };
   };
+
+  systemd.tmpfiles.rules = [
+    "d /run/docker 0755 root root -"
+    "L+ /run/docker.sock - - - - /run/podman/podman.sock"
+    "L+ /run/docker/docker.sock - - - - /run/podman/podman.sock"
+    "d /opt/1panel/tmp 0755 root root -"
+  ];
 }
